@@ -9,12 +9,13 @@ import java.util.*;
 public class MyGameMap {
 
     MyCell[][] myMap;
-    private HashMap<String, Unit> mapIdWokers = new HashMap<>();
+    HashMap<String, Unit> mapIdWokers = new HashMap<>();
     //private HashMap<String,int[]> mapIdWorkersCoordCell = new HashMap<>();
-    private List<int[]> listCoordTasksByPriory = new ArrayList<>();
-    private HashMap<String,int[]> mapIdWorkerCoordTasks = new HashMap<>();
+    List<int[]> listCoordTasksByPriory = new ArrayList<>();
+    HashMap<String,int[]> mapIdWorkerCoordTasks = new HashMap<>();
     GameState gameState;
     Player player;
+    LogicUnits logicUnits;
 
     public MyGameMap(GameState gameState1){
         gameState = gameState1;
@@ -25,6 +26,7 @@ public class MyGameMap {
                 this.myMap[y][x] = new MyCell();
             }
         }
+        logicUnits = new LogicUnits(gameState1,this);
     }
 
     public void updateMyGameMap(){
@@ -64,6 +66,8 @@ public class MyGameMap {
         // удаление из списка задач те координаты ячеек, которые очищены от задачи
         listCoordTasksByPriory.removeIf(cdTask -> myMap[cdTask[0]][cdTask[1]].typeTask == 0);
 
+
+        // РАССМОТРЕТЬ ВОПРОС если юнит останется без задания на пол пути то всегда должно появляться новое задание рядом со старым чтобы на него переназначить !!!!
     }
 
     public void addNewTasks(List<int[]> listNewTask){
@@ -114,7 +118,7 @@ public class MyGameMap {
 
 
 
-    private class MyCell {
+    class MyCell {
 
         int numberTask;
         int typeTask;

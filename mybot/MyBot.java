@@ -6,6 +6,8 @@ import java.util.*;
 
 public class MyBot {
 
+    public static final String RESET = "\u001b[0m" , RED = "\u001b[31m", BLUE = "\u001b[34m", GREEN = "\u001b[32m";
+
     MyGameMap myGameMap;
 
     private List<int[]> listNewTask = new ArrayList<>();
