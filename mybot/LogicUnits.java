@@ -260,7 +260,7 @@ public class LogicUnits {
     static int minStepsToTarget2(int from, int to,int[] mapUnitPuth){
         int sizeMap = 32;
         int lengthMap = sizeMap*sizeMap;
-        boolean test = true;
+
           /* for(int x=0; x<sizeMap; x++)
             for(int y=0; y<sizeMap; y++)if(mapLogic[x][y][0]==-3)mapUnitPuth[x][y] = -1; //для начала непроходимые клетки -1 только вражеские города*/
 
@@ -271,33 +271,17 @@ public class LogicUnits {
                     if(x==from||x==to)continue;
                     if((int)(Math.random()*10+1)<=2)mapUnitPuth[x] = -1;
                 }
-            saveMap(mapUnitPuth,"map1_"+from+" "+to);
+           // saveMap(mapUnitPuth,"map1_"+from+" "+to);
         }
 
         long s = System.nanoTime();
 
         int overMap = lengthMap-1;
-
-        //System.out.println(Arrays.toString(bord));
-        /*int upi = from, lefti = from, downi = to, righti = to;
-        if(from%32==to%32){righti = from;   }
-        else if(from%32>to%32){lefti = to; righti = from; }
-        if(from/32==to/32){downi = from;                }
-        else if(from/32>to/32){upi = to; downi = from; }
-        System.out.println("up "+upi+" left "+lefti+" down "+downi+" right "+righti);
-        int up=upi/32-1; if(up<0)up=0;
-        int left = lefti%32; if(left!=0)left = (lefti-1)%32;
-        int down = downi/32+1; if(down>overMap/32)down = overMap/32;
-        int right = righti%32; if(right<31)right+=1;
-
-        System.out.println("init 1 "+(System.nanoTime()-s));
-        System.out.println("up "+up+" left "+left+" down "+down+" right "+right);*/
-
         s = System.nanoTime();
-        //int fromX = from%32, fromY = from/32, toX = to%32, toY = to/32;
+
         int temp =0;
         int left = from%32, right = to%32; if(right<left){ temp = left;  left= right; right = temp; }
-        int up = from/32, down = to/32; if(down<up){ temp =up;  up= down; down = temp; }
+        int up = from/32, down = to/32; if(down<up){ temp = up;  up= down; down = temp; }
         if(left!=0) left-=1;
         if(right!=31)right+=1;
         if(up!=0) up-=1;
@@ -305,14 +289,10 @@ public class LogicUnits {
         System.out.println("init 11 "+(System.nanoTime()-s));
         System.out.println("up "+up+" left "+left+" down "+down+" right "+right);
 
-       /* if(u!=up) System.out.println(RED+"UP");
-        if(l!=left) System.out.println(RED+"L");
-        if(r!=right) System.out.println(RED+"R");
-        if(d!=down) System.out.println(RED+"D");*/
         s = System.nanoTime();
         int steps = 1;
 
-        //int xFrom = from[0], yFrom = from[1], xTo = to[0], yTo = to[1];
+
         int[] turns = {-1,32,1,-32};
 
         mapUnitPuth[from] = steps;
@@ -322,7 +302,7 @@ public class LogicUnits {
         int[] savedSteps0 = new int[lengthMap]; int[] savedSteps1 = new int[lengthMap];
         coordStep0[0] = from; coordStep1[0] = steps;
         int indSavedSteps = -1;
-        boolean run = true; //int sideX = 0;
+        boolean run = true;
         System.out.println("init 2 "+(System.nanoTime()-s));
         s = System.nanoTime();
         out: while (run){
@@ -332,59 +312,37 @@ public class LogicUnits {
                 if(coordStep1[x]==steps){
                    // System.out.println("step "+steps);
                     int coord = coordStep0[x];
+                    int vertical = coord%32;
+                    int horizont = coord/32;
                     for(int i=0; i<4; i++){
-                       // System.out.println("coord "+(coord%32)+" i "+i);
-                      /*  if(i==0&&coord%32==0)continue;
-                        if(i==2&&coord+1%32==0){ continue;}*/
 
-                        if(i==0&&coord%32<=left){ //System.out.println("c%32 "+(coord%32)+" left "+left);
-                        continue;}
-                        if(i==2&&coord%32>=right) continue;
-                        //if(i==3&&coord<32)continue;
+                        if(i==0&&vertical==left)continue;
+                        if(i==2&&vertical==right) continue;
 
-                        //if(coord/32<=up||coord/32>=down)continue;
+                        if(i==3&&horizont==up)continue;
+                        if(i==1&&horizont==down)continue;
+
                         int sideX = coord+turns[i];
-                        //System.out.println("X1 "+sideX);
-                        //System.out.println("x/32 "+sideX/32+" "+sideX);
-                        //if(sideX<0)continue;
-                        //int line = sideX/32;
 
-                       // if(sideX<0||sideX/32<up||sideX/32>down)continue;
-
-                        if(i==3&&(sideX<0||sideX/32<up))continue;
-
-                        if(i==1&&sideX/32>down)continue;
-                        //System.out.println("i "+i+" "+sideX+" "+(sideX/32)+" "+coord);
-                        //if((int) Math.floor( (double) sideX/32 )<up||sideX/32>down)continue;
-                        //if(sideX<0||sideX>overMap)continue;
-
-
-                        //System.out.println("X "+sideX);
                         if(mapUnitPuth[sideX]==0){ int newstep = steps+1;
                             mapUnitPuth[sideX] = newstep;
                             if(sideX==to) run = false;
-                            //System.out.println(mapUnitPuth[sideX][sideY]);
+
                             indNextCoordSteps++;
                             nextCoordSteps0[indNextCoordSteps] = sideX;
-                            //nextCoordSteps[1][indNextCoordSteps] = sideY;
                             nextCoordSteps1[indNextCoordSteps] = newstep;
                             indSavedSteps++;
                             savedSteps0[indSavedSteps] = sideX;
-                            //savedSteps[1][indSavedSteps] = sideY;
                             savedSteps1[indSavedSteps] = newstep;
                         }
                     }
                 } else { if(x==0){ steps=0; break out; } break;}
             }
-            //System.out.println(mapUnitPuth[to[0]][to[1]]);
+
             for(int x=0; x<=indNextCoordSteps; x++) {
-                //if(nextCoordSteps[x][2]!=steps+1)break;
                 coordStep0[x] = nextCoordSteps0[x];
                 coordStep1[x] = nextCoordSteps1[x];
-                //coordStep2[x] = nextCoordSteps[2][x];
-                //coordSteps[x] = nextCoordSteps[x].clone();
             }
-
             steps++;
         }
 
@@ -398,11 +356,8 @@ public class LogicUnits {
 
         for(int x=0; x<lengthMap; x++) {
                 if(mapUnitPuth[x]<1)continue;
-                //int distance = Math.abs(x-to[0])+Math.abs(y-to[1]);
                 int distance = Math.abs(x/32-to/32)+Math.abs(x%32-to%32);
                 if(mapUnitPuth[to]-mapUnitPuth[x]<distance)mapUnitPuth[x] = 0;
-
-                //if(mapUnitPuth[x]>0) System.out.println(mapUnitPuth[x]);
             }
 
         mapUnitPuth[to]*=-1;
@@ -415,41 +370,25 @@ public class LogicUnits {
             if(mapUnitPuth[savedSteps0[i]]==0)continue;
             if(step==0)continue;
             int coord = savedSteps0[i];
-
+            int vertical = coord%32;
+            int horizont = coord/32;
             if(step!=steps){  // здесь обработка только ячеек не равных последнему шагу, так как последняя всегда имеет рядом шаг меньше ее
                 boolean isPreNum = false;
                 //System.out.println("s "+step+" "+steps);
                 for(int a=0; a<4; a++){
-                    //System.out.println("coord "+(coordStep0[x]+turns[i]));
-                    /*if(a==0&&coord%32==0)continue;
-                    if(a==2&&coord+1%32==0){ continue;}*/
 
-                    if(a==0&&coord%32<=left)continue;
-                    if(a==2&&coord%32>=right)continue;
+                    if(a==0&&vertical==left)continue;
+                    if(a==2&&vertical==right)continue;
 
-                    //if(coord/32<=up||coord/32>=down)continue;
+                    if(a==3&&horizont==up)continue;
+                    if(a==1&&horizont==down)continue;
 
                     int sideX = coord+turns[a];
-                    //System.out.println("x "+sideX);
-                    //if(sideX/32<=up||sideX/32>=down)continue;
-                    /*if(sideX<0)continue;
-                    if(sideX/32 <up||sideX/32>down)continue;*/
-
-                    if(a==3&&(sideX<0||sideX/32<up))continue;
-
-                    if(a==1&&sideX/32>down)continue;
-                    //if(sideX<0||sideX>overMap)continue;
-
-               /* for(int a=0; a<4; a++){
-                    int sideX = savedSteps[0][i]+cardPoints[a][0];
-                    int sideY = savedSteps[1][i]+cardPoints[a][1];
-                    if(sideX<0||sideX>sizeMap-1||sideY<0||sideY>sizeMap-1)continue;*/
 
                     // Обнуление ячеек которые не имеют предидущего шага
                     // поиск шагов вокруг шага, которые больше текущего шага, если такие не находятся, то текущая ячейка отмечается как ноль
                     // если текущая ячейка ноль то она вообще не обрабатывается дальше
                     // если найдена соседняя ячейка с шагом больше текущей, цикл останавливается и дальше идет нижний цикл с отмечанием соседних клеток
-
 
                     int num = mapUnitPuth[sideX];
                     if(num<-1){
@@ -463,22 +402,13 @@ public class LogicUnits {
             // цикл отмечание соседних клеток среди которых есть шаг меньше текущего шага отмечание идет присвоением минуса
 
             for(int a=0; a<4; a++){
-                /*if(a==0&&coord%32==0)continue;
-                if(a==2&&coord+1%32==0)continue;*/
-                if(a==0&&coord%32<=left)continue;
-                if(a==2&&coord%32>=right)continue;
 
-                //if(coord/32<=up||coord/32>=down)continue;
+                if(a==0&&vertical==left)continue;
+                if(a==2&&vertical==right)continue;
+                if(a==3&&horizont==up)continue;
+                if(a==1&&horizont==down)continue;
+
                 int sideX = coord+turns[a];
-
-                /*if(sideX<0)continue;
-                if(sideX/32<up||sideX/32>down)continue;*/
-
-                if(a==3&&(sideX<0||sideX/32<up))continue;
-
-                if(a==1&&sideX/32>down)continue;
-                //if(sideX/32<=up||sideX/32>=down)continue;
-                //if(sideX<0||sideX>overMap)continue;
                 int num = mapUnitPuth[sideX];
                 //System.out.println("num "+num);
                 if(num<2)continue;
@@ -597,9 +527,10 @@ public class LogicUnits {
     public static void main(String[] args) {
        //minStepsToTarget(new int[]{1,1},new int[]{25,25},read_ObjectFromFile("map1"));
         for(int i=0; i<100; i++)
-        minStepsToTarget2((int) (Math.random()*1024),(int) (Math.random()*1024),null);   //read_ObjectFromFile("map1_808 17")
-
-        //minStepsToTarget2(808,17,read_ObjectFromFile("map1_808 17"));
+        minStepsToTarget2((int) (Math.random()*1024),(int) (Math.random()*1024),null);   //read_ObjectFromFile("map1_0 990")
+        /*int[] savepMap = read_ObjectFromFile("map1_0 990");
+        for(int i=0; i<10; i++)
+        minStepsToTarget2(0,990,savepMap.clone());*/
 
         /*int[] t = new int[900];
         long s =System.nanoTime();
