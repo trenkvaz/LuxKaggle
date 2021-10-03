@@ -71,5 +71,24 @@ public class Testing {
         for (int i=0; i<cl.length; i++)cl[i] = (int)(coll[i]/0.25);
         System.out.println((System.nanoTime()-s));
         System.out.println(Arrays.toString(cl));
+
+        int[]m = {1,1,1,1};
+        s =System.nanoTime();
+        for(int a=0; a<500; a++)
+        for(int i=0; i<4; i++){if(m[i]>0)continue; break;}
+        System.out.println((System.nanoTime()-s));
+        s =System.nanoTime();
+        for(int a=0; a<500; a++)
+        for(int im:m){if(im>0)continue; break;}
+        System.out.println((System.nanoTime()-s));
+        for(int i=0; i<100; i++){
+
+        int fx = (int)(Math.random()*32), fy = (int)(Math.random()*32), tx = (int)(Math.random()*32), ty = (int)(Math.random()*32);
+            System.out.println("cd "+fx+" "+fy+" "+tx+" "+ty);
+        int dis = Math.abs(fx-tx)+Math.abs(fy-ty);
+        int fromX = fx+(fy*32), toX = tx+(ty*32);
+        int dis2 = Math.abs(fromX/32-toX/32)+Math.abs(fromX%32-toX%32);
+        System.out.println(dis+"  "+dis2);
+        }
     }
 }
